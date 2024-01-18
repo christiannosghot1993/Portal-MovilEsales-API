@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Portal-MovilEsales-API.props" />
+</Project>

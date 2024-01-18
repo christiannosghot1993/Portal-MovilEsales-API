@@ -1,0 +1,5 @@
+﻿Para actualizar el modelo de la bdd:
+
+Scaffold-DbContext "Server=10.193.46.9;Database=EsalesLatam;Persist Security Info=False;User ID=admin.sqlec;Password=admin.sqlec;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force -Context ClaseContext
+
+Scaffold-DbContext "Server=10.193.46.9;Database=EsalesLatam;Persist Security Info=False;User ID=admin.sqlec;Password=admin.sqlec;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force
