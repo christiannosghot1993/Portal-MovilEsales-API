@@ -77,21 +77,17 @@ namespace Portal_MovilEsales_API.Controllers
 
                 var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
 
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
+                var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),//Se estaba usando DateTime.UtcNow.ToString()), lo que causaba que la hora se adelante 5 horas más a la actual y ocacionaba que el token con caducidad de 60 minutos se detecte como caducado
                     new Claim("id", iuser.Id),
                     new Claim("usuario", iuser.UserName)
                 };
-
-                //var identity = new ClaimsIdentity(claims);
-
-                //var principal = new ClaimsPrincipal(identity);
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
-                var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var token = new JwtSecurityToken(
                     jwt.Issuer,
@@ -101,16 +97,15 @@ namespace Portal_MovilEsales_API.Controllers
                     signingCredentials: singIn
                 );
 
-                //HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, principal);
 
                 var usuarionuevo = _dbcontext.AspNetUsers.FirstOrDefault(x => x.Email == email);
 
-                if (usuarionuevo != null)
+                if (false)
                 {
                     codigopais = usuarionuevo.PlantaId.ToString();
                     codigoperfil = usuarionuevo.PerfilEsales.ToString();
                 }
-               
+
                 return StatusCode(StatusCodes.Status200OK, new
                 {
                     success = true,

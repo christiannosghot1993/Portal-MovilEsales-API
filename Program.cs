@@ -44,18 +44,33 @@ builder.Services
     .AddEntityFrameworkStores<MyIdentityDBContext>()
     ;
 
+#region Se configura CORS para permitir conexiones remotas al api permitiendo cualquier origen, header y método
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
+#endregion
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        //ValidateIssuer = true,
-        //ValidateAudience = true,
-        //ValidateLifetime = true,
-        //ValidateIssuerSigningKey = true,
-        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        //ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidateIssuer = true,//valida que el emisor configurado en appsetings.json coincida con el emisor configurado en la creación del token
+        ValidateAudience = true,//Valida que la audiencia configurada en appsetings.json coincida con la audiencia configurada en la creación del token
+        ValidateLifetime = true,//verifica tiempo de caducidad del token
+        ValidateIssuerSigningKey = true,//verifica el método de encriptación de la clave
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
+    options.RequireHttpsMetadata = false;
 });
 
 var app = builder.Build();
@@ -68,8 +83,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
 
+app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

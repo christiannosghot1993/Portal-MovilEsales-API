@@ -23,10 +23,9 @@ namespace Portal_MovilEsales_API.Controllers
             _configuration = configuration;
             _dbcontext = dbcontext;
         }
-        
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(JwtBearerDefaults.AuthenticationScheme)]
-        //[Authorize(Roles = "Administrator")]
+
+        //Se debe especificar el esquema Bearer en el AuthenticationSchemes para que la autorización funcione
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
         public dynamic RetonaDatosInicio([FromBody] Object optData)
         {
